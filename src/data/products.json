@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "title": "Laptop Gaming",
+    "description": "Laptop de alto rendimiento para gaming",
+    "code": "LAP001",
+    "price": 1200,
+    "status": true,
+    "stock": 10,
+    "category": "Electrónicos",
+    "thumbnails": ["laptop1.jpg", "laptop2.jpg"]
+  },
+  {
+    "id": 2,
+    "title": "Mouse Inalámbrico",
+    "description": "Mouse ergonómico inalámbrico",
+    "code": "MOU001",
+    "price": 25,
+    "status": true,
+    "stock": 50,
+    "category": "Accesorios",
+    "thumbnails": ["mouse1.jpg"]
+  },
+  {
+    "id": 3,
+    "title": "Teclado Mecánico",
+    "description": "Teclado mecánico RGB",
+    "code": "KEY001",
+    "price": 80,
+    "status": true,
+    "stock": 30,
+    "category": "Accesorios",
+    "thumbnails": ["keyboard1.jpg", "keyboard2.jpg"]
+  }
+]
