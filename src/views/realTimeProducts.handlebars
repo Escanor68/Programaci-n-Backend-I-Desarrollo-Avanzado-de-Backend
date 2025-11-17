@@ -1,0 +1,73 @@
+<h2>Productos en Tiempo Real</h2>
+
+<div id="alert-container"></div>
+
+<div class="form-container">
+    <h3>Agregar Nuevo Producto</h3>
+    <form id="product-form">
+        <div class="form-group">
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Descripción:</label>
+            <textarea id="description" name="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="code">Código:</label>
+            <input type="text" id="code" name="code" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Precio:</label>
+            <input type="number" id="price" name="price" step="0.01" min="0" required>
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" min="0" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Categoría:</label>
+            <input type="text" id="category" name="category" required>
+        </div>
+        <div class="form-group">
+            <label for="status">Estado:</label>
+            <select id="status" name="status">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="thumbnails">Thumbnails (separados por coma):</label>
+            <input type="text" id="thumbnails" name="thumbnails" placeholder="imagen1.jpg, imagen2.jpg">
+        </div>
+        <button type="submit" class="btn btn-primary">Agregar Producto</button>
+    </form>
+</div>
+
+<div id="products-container">
+    {{#if products.length}}
+        <div class="products-grid" id="products-grid">
+            {{#each products}}
+            <div class="product-card" data-product-id="{{this.id}}">
+                <h3>{{this.title}}</h3>
+                <p><strong>Descripción:</strong> {{this.description}}</p>
+                <p><span class="code">Código: {{this.code}}</span></p>
+                <p class="price">${{this.price}}</p>
+                <p class="stock">Stock: {{this.stock}} unidades</p>
+                <p><strong>Categoría:</strong> {{this.category}}</p>
+                <p><strong>Estado:</strong> {{#if this.status}}Activo{{else}}Inactivo{{/if}}</p>
+                {{#if this.thumbnails.length}}
+                <p><strong>Imágenes:</strong> {{this.thumbnails.length}}</p>
+                {{/if}}
+                <button class="btn-delete" onclick="deleteProduct({{this.id}})">Eliminar</button>
+            </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="no-products">
+            <p>No hay productos disponibles</p>
+        </div>
+    {{/if}}
+</div>
+
+<script src="/js/realtime.js"></script>

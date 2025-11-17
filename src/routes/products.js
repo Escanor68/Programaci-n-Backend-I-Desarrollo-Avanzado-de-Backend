@@ -53,6 +53,14 @@ router.post('/', async (req, res) => {
         const productData = req.body;
         const newProduct = await productManager.addProduct(productData);
         
+        // Obtener io del app y emitir evento de socket
+        const io = req.app.get('io');
+        if (io) {
+            const products = await productManager.getProducts();
+            io.emit('productsUpdated', products);
+            io.emit('productAdded', newProduct);
+        }
+        
         res.status(201).json({
             status: 'success',
             message: 'Producto creado exitosamente',
@@ -110,6 +118,14 @@ router.delete('/:pid', async (req, res) => {
         }
 
         const deletedProduct = await productManager.deleteProduct(productId);
+        
+        // Obtener io del app y emitir evento de socket
+        const io = req.app.get('io');
+        if (io) {
+            const products = await productManager.getProducts();
+            io.emit('productsUpdated', products);
+            io.emit('productDeleted', productId);
+        }
         
         res.json({
             status: 'success',
