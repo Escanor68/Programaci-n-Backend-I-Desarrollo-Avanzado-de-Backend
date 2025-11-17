@@ -71,29 +71,32 @@ socket.on('error', (error) => {
 });
 
 // Manejar el formulario de agregar producto
-document.getElementById('product-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const productData = {
-        title: formData.get('title'),
-        description: formData.get('description'),
-        code: formData.get('code'),
-        price: parseFloat(formData.get('price')),
-        stock: parseInt(formData.get('stock')),
-        category: formData.get('category'),
-        status: formData.get('status') === 'true',
-        thumbnails: formData.get('thumbnails') 
-            ? formData.get('thumbnails').split(',').map(t => t.trim()).filter(t => t)
-            : []
-    };
-    
-    // Emitir evento para agregar producto
-    socket.emit('addProduct', productData);
-    
-    // Limpiar formulario
-    e.target.reset();
-});
+const productForm = document.getElementById('product-form');
+if (productForm) {
+    productForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const productData = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            code: formData.get('code'),
+            price: parseFloat(formData.get('price')),
+            stock: parseInt(formData.get('stock')),
+            category: formData.get('category'),
+            status: formData.get('status') === 'true',
+            thumbnails: formData.get('thumbnails') 
+                ? formData.get('thumbnails').split(',').map(t => t.trim()).filter(t => t)
+                : []
+        };
+        
+        // Emitir evento para agregar producto
+        socket.emit('addProduct', productData);
+        
+        // Limpiar formulario
+        e.target.reset();
+    });
+}
 
 // Función para eliminar producto
 function deleteProduct(productId) {
