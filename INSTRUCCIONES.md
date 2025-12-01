@@ -30,44 +30,15 @@ Esto instalará:
 - `express-handlebars` - Motor de plantillas
 - `socket.io` - Comunicación en tiempo real
 - `mongoose` - ODM para MongoDB
-- `dotenv` - Manejo de variables de entorno
 - `nodemon` - Auto-reload en desarrollo (devDependency)
-
-## ⚙️ Configuración de Variables de Entorno
-
-El proyecto usa variables de entorno para configuración segura.
-
-1. **Copiar archivo de ejemplo**:
-   ```bash
-   # En Windows PowerShell:
-   Copy-Item .env.example .env
-   
-   # En Linux/Mac:
-   cp .env.example .env
-   ```
-
-2. **Editar el archivo `.env`** con tus valores:
-   ```env
-   PORT=8080
-   NODE_ENV=development
-   MONGODB_URI=tu_uri_de_mongodb
-   DB_NAME=ecommerce
-   CORS_ORIGIN=*
-   ```
-
-3. **Importante**: 
-   - El archivo `.env` no se sube a Git por seguridad
-   - El archivo `.env.example` es solo una plantilla
-   - Completa todos los valores antes de iniciar el servidor
 
 ## 🗄️ Configuración de MongoDB
 
 El proyecto está configurado para usar **MongoDB Atlas** (base de datos en la nube).
 
-- La URI de conexión se configura en el archivo `.env`
 - La conexión se realiza automáticamente al iniciar el servidor
 - La base de datos se crea automáticamente si no existe
-- Si no configuras `.env`, usará valores por defecto (solo para desarrollo)
+- Puedes modificar la configuración en `src/config/config.js` si necesitas cambiar la URI o el nombre de la base de datos
 
 ## ▶️ Ejecución
 
@@ -259,11 +230,11 @@ src/
 
 ### Error: "Port 8080 already in use"
 - Cierra otros procesos que usen el puerto 8080
-- O cambia el puerto en el archivo `.env` (variable `PORT`)
+- O cambia el puerto en `src/config/config.js` (variable `port`)
 
 ### Error de conexión a MongoDB
 - Verifica tu conexión a internet
-- Revisa que el archivo `.env` tenga la URI correcta de MongoDB
+- Revisa que la URI de MongoDB en `src/config/config.js` sea correcta
 - La conexión a MongoDB Atlas es automática si está configurada
 - Revisa los logs del servidor para más detalles
 - Si no tienes `.env`, el proyecto usará valores por defecto
@@ -299,14 +270,14 @@ Esta arquitectura permite:
 ## 📚 Documentación Adicional
 
 - `README.md` - Documentación general del proyecto
-- `.env.example` - Plantilla de variables de entorno
+- `COMANDOS_PRUEBA.md` - Comandos para probar el proyecto
 
 ## 💡 Tips
 
 - Usa `npm run dev` durante el desarrollo para auto-reload
-- Configura siempre el archivo `.env` antes de iniciar el servidor
 - Abre la consola del navegador (F12) para ver los eventos de Socket.io
 - Los productos se guardan en MongoDB automáticamente
 - Los cambios se reflejan en tiempo real en todas las vistas conectadas
 - Las validaciones de productos se realizan automáticamente mediante middlewares
 - Revisa los logs del servidor para ver todas las peticiones HTTP
+- Puedes modificar la configuración en `src/config/config.js` si necesitas cambiar puerto, MongoDB, etc.

@@ -3,9 +3,6 @@
  * Configura Express, Handlebars, Socket.io y MongoDB
  */
 
-// Cargar variables de entorno al inicio
-require('dotenv').config();
-
 const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');

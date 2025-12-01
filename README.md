@@ -38,7 +38,6 @@ El proyecto sigue una **arquitectura en capas** (Layered Architecture) para mant
 - ✅ Socket.io modularizado en carpeta separada
 
 ### Mejoras Adicionales
-- ✅ Variables de entorno con dotenv
 - ✅ Configuración centralizada
 - ✅ Validaciones robustas de productos
 - ✅ CORS configurado para Socket.io
@@ -52,10 +51,10 @@ El proyecto sigue una **arquitectura en capas** (Layered Architecture) para mant
 npm install
 ```
 
-3. **Configurar Variables de Entorno**:
-   - Copiar `.env.example` a `.env`
-   - Completar con tus valores de MongoDB y configuración
-   - Ver `MEJORAS_IMPLEMENTADAS.md` para más detalles
+3. **Configurar MongoDB**:
+   - El proyecto está configurado para usar MongoDB Atlas
+   - La conexión se realiza automáticamente al iniciar el servidor
+   - Puedes modificar la configuración en `src/config/config.js` si es necesario
 
 ## ▶️ Ejecución
 
@@ -269,13 +268,13 @@ Manejan validaciones, logging, manejo de errores y rutas no encontradas:
 
 ## 📝 Notas
 
-- **Variables de entorno**: Usa `.env` para configuración (ver `.env.example`)
 - MongoDB Atlas se conecta automáticamente al iniciar el servidor
 - Los IDs son ObjectIds de MongoDB
 - Las validaciones se realizan mediante middlewares antes de llegar a los controllers
-- El servidor escucha en el puerto 8080 por defecto (configurable en `.env`)
+- El servidor escucha en el puerto 8080 por defecto (configurable en `src/config/config.js`)
 - Los middlewares validan ObjectIds, campos requeridos, tipos de datos y productos completos
 - Socket.io está modularizado en `src/sockets/` para mejor organización
+- La configuración está centralizada en `src/config/config.js`
 
 ## 👨‍💻 Autor
 

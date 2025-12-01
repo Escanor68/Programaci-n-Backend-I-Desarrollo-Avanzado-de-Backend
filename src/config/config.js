@@ -1,25 +1,23 @@
 /**
  * Configuración centralizada de la aplicación
- * Centraliza todas las variables de entorno y configuraciones
+ * Centraliza todas las configuraciones de la aplicación
  */
-
-require('dotenv').config();
 
 const config = {
     // Configuración del servidor
-    port: process.env.PORT || 8080,
-    nodeEnv: process.env.NODE_ENV || 'development',
+    port: 8080,
+    nodeEnv: 'development',
     
     // Configuración de MongoDB
     mongodb: {
-        uri: process.env.MONGODB_URI || 'mongodb+srv://ricardogrebosz_db_user:8ccON8OfETxQYjtl@proyectocoderhouse.n4c7xwl.mongodb.net/?appName=ProyectoCoderHouse',
-        dbName: process.env.DB_NAME || 'ecommerce'
+        uri: 'mongodb+srv://ricardogrebosz_db_user:8ccON8OfETxQYjtl@proyectocoderhouse.n4c7xwl.mongodb.net/?appName=ProyectoCoderHouse',
+        dbName: 'ecommerce'
     },
     
     // Configuración de Socket.io
     socket: {
         cors: {
-            origin: process.env.CORS_ORIGIN || '*',
+            origin: '*',
             methods: ['GET', 'POST']
         }
     }
