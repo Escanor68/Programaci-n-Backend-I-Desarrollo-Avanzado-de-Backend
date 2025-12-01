@@ -10,6 +10,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+# .env.example se debe incluir en el repositorio como plantilla
 
 # Logs
 logs
@@ -32,3 +33,6 @@ Thumbs.db
 # Archivos de build
 dist/
 build/
+
+# Archivos de datos locales (ya no se usan, ahora MongoDB)
+src/data/

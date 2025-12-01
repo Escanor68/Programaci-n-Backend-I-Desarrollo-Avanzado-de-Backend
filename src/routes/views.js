@@ -1,43 +1,24 @@
 const express = require('express');
-const ProductManager = require('../managers/ProductManager');
+const ViewController = require('../controllers/ViewController');
 
 const router = express.Router();
-const productManager = new ProductManager();
+const viewController = new ViewController();
 
-// GET / - Vista home con lista de productos
-router.get('/', async (req, res) => {
-    try {
-        const products = await productManager.getProducts();
-        res.render('home', {
-            title: 'Lista de Productos',
-            products: products
-        });
-    } catch (error) {
-        res.status(500).render('home', {
-            title: 'Lista de Productos',
-            products: [],
-            error: error.message
-        });
-    }
+// GET / - Redirigir a /products
+router.get('/', (req, res) => {
+    res.redirect('/products');
 });
+
+// GET /products - Vista de productos con paginación
+router.get('/products', (req, res) => viewController.getProductsView(req, res));
+
+// GET /products/:pid - Vista de detalle de producto
+router.get('/products/:pid', (req, res) => viewController.getProductDetailView(req, res));
+
+// GET /carts/:cid - Vista de carrito específico
+router.get('/carts/:cid', (req, res) => viewController.getCartView(req, res));
 
 // GET /realtimeproducts - Vista de productos en tiempo real
-router.get('/realtimeproducts', async (req, res) => {
-    try {
-        const products = await productManager.getProducts();
-        res.render('realTimeProducts', {
-            title: 'Productos en Tiempo Real',
-            products: products,
-            socketio: true
-        });
-    } catch (error) {
-        res.status(500).render('realTimeProducts', {
-            title: 'Productos en Tiempo Real',
-            products: [],
-            socketio: true,
-            error: error.message
-        });
-    }
-});
+router.get('/realtimeproducts', (req, res) => viewController.getRealTimeProductsView(req, res));
 
 module.exports = router;

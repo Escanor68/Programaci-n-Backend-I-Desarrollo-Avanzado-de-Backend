@@ -29,7 +29,45 @@ Esto instalará:
 - `express` - Framework web
 - `express-handlebars` - Motor de plantillas
 - `socket.io` - Comunicación en tiempo real
+- `mongoose` - ODM para MongoDB
+- `dotenv` - Manejo de variables de entorno
 - `nodemon` - Auto-reload en desarrollo (devDependency)
+
+## ⚙️ Configuración de Variables de Entorno
+
+El proyecto usa variables de entorno para configuración segura.
+
+1. **Copiar archivo de ejemplo**:
+   ```bash
+   # En Windows PowerShell:
+   Copy-Item .env.example .env
+   
+   # En Linux/Mac:
+   cp .env.example .env
+   ```
+
+2. **Editar el archivo `.env`** con tus valores:
+   ```env
+   PORT=8080
+   NODE_ENV=development
+   MONGODB_URI=tu_uri_de_mongodb
+   DB_NAME=ecommerce
+   CORS_ORIGIN=*
+   ```
+
+3. **Importante**: 
+   - El archivo `.env` no se sube a Git por seguridad
+   - El archivo `.env.example` es solo una plantilla
+   - Completa todos los valores antes de iniciar el servidor
+
+## 🗄️ Configuración de MongoDB
+
+El proyecto está configurado para usar **MongoDB Atlas** (base de datos en la nube).
+
+- La URI de conexión se configura en el archivo `.env`
+- La conexión se realiza automáticamente al iniciar el servidor
+- La base de datos se crea automáticamente si no existe
+- Si no configuras `.env`, usará valores por defecto (solo para desarrollo)
 
 ## ▶️ Ejecución
 
@@ -47,10 +85,24 @@ El servidor estará disponible en **http://localhost:8080**
 
 ## 🌐 Acceso a las Vistas
 
-### Vista Home
-- **URL**: http://localhost:8080/
-- Muestra la lista completa de productos
-- Vista estática (se actualiza al recargar la página)
+### Vista de Productos
+- **URL**: http://localhost:8080/products
+- Muestra la lista de productos con paginación
+- Incluye filtros por categoría y disponibilidad
+- Ordenamiento por precio (ascendente/descendente)
+- Botones para ver detalles y agregar al carrito
+
+### Vista de Detalle de Producto
+- **URL**: http://localhost:8080/products/:pid
+- Muestra información completa del producto
+- Botón para agregar al carrito
+
+### Vista de Carrito
+- **URL**: http://localhost:8080/carts/:cid
+- Muestra los productos del carrito con información completa
+- Permite actualizar cantidades
+- Permite eliminar productos
+- Botón para vaciar el carrito
 
 ### Vista Tiempo Real
 - **URL**: http://localhost:8080/realtimeproducts
@@ -80,6 +132,11 @@ Content-Type: application/json
 }
 ```
 
+#### Obtener productos con paginación y filtros:
+```
+GET http://localhost:8080/api/products?limit=5&page=1&sort=asc&query=Electrónicos
+```
+
 #### Crear un carrito:
 ```
 POST http://localhost:8080/api/carts
@@ -87,61 +144,95 @@ POST http://localhost:8080/api/carts
 
 #### Agregar producto al carrito:
 ```
-POST http://localhost:8080/api/carts/1/product/1
+POST http://localhost:8080/api/carts/{cartId}/product/{productId}
 ```
 
 Ver `EJEMPLOS_API.md` para más ejemplos completos.
 
-## 🎯 Probar Funcionalidades en Tiempo Real
+## 🎯 Probar Funcionalidades
 
-1. **Abrir múltiples pestañas**:
-   - Abre `http://localhost:8080/realtimeproducts` en 2-3 pestañas diferentes
+### 1. Paginación de Productos
+1. Abre `http://localhost:8080/products`
+2. Usa los filtros para buscar por categoría o disponibilidad
+3. Cambia el ordenamiento por precio
+4. Navega entre páginas usando los botones de paginación
 
-2. **Crear un producto**:
-   - En una pestaña, completa el formulario y haz clic en "Agregar Producto"
-   - Observa cómo se actualiza automáticamente en todas las pestañas
+### 2. Agregar Productos al Carrito
+1. En la vista de productos, haz clic en "Agregar al Carrito"
+2. O ve al detalle del producto y agrega desde ahí
+3. El carrito se guarda en localStorage del navegador
 
-3. **Eliminar un producto**:
-   - En una pestaña, haz clic en "Eliminar" en cualquier producto
-   - Observa cómo desaparece en todas las pestañas
+### 3. Gestionar Carrito
+1. Accede a la vista del carrito usando el ID guardado
+2. Actualiza las cantidades directamente
+3. Elimina productos individuales
+4. Vacía el carrito completo
 
-4. **Probar desde API REST**:
-   - Usa Postman para crear un producto con `POST /api/products`
-   - Observa cómo se actualiza automáticamente en las vistas web
+### 4. Tiempo Real
+1. Abre múltiples pestañas en `/realtimeproducts`
+2. Crea o elimina un producto en una pestaña
+3. Observa cómo se actualiza automáticamente en todas las pestañas
 
 ## 📁 Estructura del Proyecto
 
 ```
 src/
 ├── app.js                      # Servidor principal
-├── routes/
-│   ├── products.js            # Rutas API de productos
-│   ├── carts.js               # Rutas API de carritos
-│   └── views.js               # Rutas de vistas web
-├── views/
+├── config/
+│   ├── config.js              # Configuración centralizada
+│   ├── database.js            # Configuración MongoDB
+│   └── handlebars-helpers.js  # Helpers de Handlebars
+├── controllers/                # Controladores (peticiones HTTP)
+│   ├── ProductController.js
+│   ├── CartController.js
+│   └── ViewController.js
+├── services/                   # Servicios (lógica de negocio)
+│   ├── ProductService.js
+│   └── CartService.js
+├── repositories/               # Repositorios (acceso a datos)
+│   ├── ProductRepository.js
+│   └── CartRepository.js
+├── models/                     # Modelos Mongoose
+│   ├── Product.js
+│   └── Cart.js
+├── middlewares/                # Middlewares de Express
+│   ├── logger.middleware.js
+│   ├── errorHandler.middleware.js
+│   ├── notFoundHandler.middleware.js
+│   ├── validators.middleware.js
+│   ├── productValidator.middleware.js
+│   └── index.js
+├── sockets/                    # Configuración Socket.io
+│   ├── socketHandlers.js
+│   └── index.js
+├── routes/                     # Definición de rutas
+│   ├── products.js
+│   ├── carts.js
+│   └── views.js
+├── views/                      # Vistas Handlebars
 │   ├── layouts/
-│   │   └── main.handlebars    # Layout principal con estilos
-│   ├── home.handlebars        # Vista home
-│   └── realTimeProducts.handlebars  # Vista tiempo real
-├── public/
-│   └── js/
-│       └── realtime.js        # Cliente Socket.io
-├── managers/
-│   ├── ProductManager.js      # Gestión de productos
-│   └── CartManager.js         # Gestión de carritos
-└── data/
-    ├── products.json          # Persistencia de productos
-    └── carts.json             # Persistencia de carritos
+│   │   └── main.handlebars
+│   ├── products.handlebars
+│   ├── productDetail.handlebars
+│   ├── cart.handlebars
+│   ├── error.handlebars
+│   └── realTimeProducts.handlebars
+└── public/
+    └── js/
+        └── realtime.js
 ```
 
 ## 🔍 Endpoints Disponibles
 
 ### Vistas Web
-- `GET /` - Vista home
+- `GET /` - Redirige a /products
+- `GET /products` - Vista de productos con paginación
+- `GET /products/:pid` - Vista de detalle de producto
+- `GET /carts/:cid` - Vista de carrito específico
 - `GET /realtimeproducts` - Vista tiempo real
 
 ### API - Productos (`/api/products/`)
-- `GET /` - Listar todos los productos
+- `GET /` - Listar productos (con paginación, filtros y ordenamiento)
 - `GET /:pid` - Obtener producto por ID
 - `POST /` - Crear nuevo producto
 - `PUT /:pid` - Actualizar producto
@@ -149,10 +240,11 @@ src/
 
 ### API - Carritos (`/api/carts/`)
 - `POST /` - Crear nuevo carrito
-- `GET /:cid` - Listar productos del carrito
+- `GET /:cid` - Listar productos del carrito (con populate)
 - `POST /:cid/product/:pid` - Agregar producto al carrito
-- `PUT /:cid/product/:pid` - Actualizar cantidad de producto
-- `DELETE /:cid/product/:pid` - Eliminar producto del carrito
+- `PUT /:cid/products/:pid` - Actualizar cantidad de producto
+- `PUT /:cid` - Actualizar todos los productos del carrito
+- `DELETE /:cid/products/:pid` - Eliminar producto del carrito
 - `DELETE /:cid` - Vaciar carrito
 
 ## ⚙️ Scripts Disponibles
@@ -167,25 +259,54 @@ src/
 
 ### Error: "Port 8080 already in use"
 - Cierra otros procesos que usen el puerto 8080
-- O cambia el puerto en `src/app.js`
+- O cambia el puerto en el archivo `.env` (variable `PORT`)
+
+### Error de conexión a MongoDB
+- Verifica tu conexión a internet
+- Revisa que el archivo `.env` tenga la URI correcta de MongoDB
+- La conexión a MongoDB Atlas es automática si está configurada
+- Revisa los logs del servidor para más detalles
+- Si no tienes `.env`, el proyecto usará valores por defecto
 
 ### Las vistas no se actualizan
 - Verifica que Socket.io esté funcionando (revisa la consola del navegador)
-- Asegúrate de estar en la ruta `/realtimeproducts`
+- Asegúrate de estar en la ruta correcta
 
-### Los archivos JSON no se crean
-- Verifica que la carpeta `src/data/` exista
-- Verifica los permisos de escritura en el directorio
+### Los productos no se muestran
+- Verifica que MongoDB esté conectado
+- Revisa la consola del servidor para errores
+- Asegúrate de haber creado productos primero
+
+## 🏛️ Arquitectura del Proyecto
+
+El proyecto sigue una **arquitectura en capas** (Layered Architecture):
+
+1. **Controllers**: Manejan las peticiones HTTP y respuestas
+2. **Services**: Contienen la lógica de negocio
+3. **Repositories**: Gestionan el acceso a la base de datos
+4. **Models**: Definen los esquemas de datos con Mongoose
+5. **Middlewares**: Manejan validaciones, logging, errores y rutas no encontradas
+6. **Sockets**: Configuración y handlers de Socket.io para tiempo real
+
+Esta arquitectura permite:
+- Separación clara de responsabilidades
+- Código más mantenible y escalable
+- Facilidad para realizar pruebas
+- Reutilización de código
+- Validaciones centralizadas
+- Configuración modular
 
 ## 📚 Documentación Adicional
 
 - `README.md` - Documentación general del proyecto
-- `EJEMPLOS_API.md` - Ejemplos detallados de uso de la API
-- `ENTREGA_2_SOLUCION.md` - Documentación técnica de WebSockets y Handlebars
+- `.env.example` - Plantilla de variables de entorno
 
 ## 💡 Tips
 
 - Usa `npm run dev` durante el desarrollo para auto-reload
+- Configura siempre el archivo `.env` antes de iniciar el servidor
 - Abre la consola del navegador (F12) para ver los eventos de Socket.io
-- Los productos de ejemplo están en `src/data/products.json`
-- Los cambios se guardan automáticamente en los archivos JSON
+- Los productos se guardan en MongoDB automáticamente
+- Los cambios se reflejan en tiempo real en todas las vistas conectadas
+- Las validaciones de productos se realizan automáticamente mediante middlewares
+- Revisa los logs del servidor para ver todas las peticiones HTTP
