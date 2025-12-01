@@ -52,18 +52,21 @@ app.use(express.urlencoded({ extended: true }));
 // Middleware para logging de todas las peticiones HTTP
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    // Debug: mostrar si es una petición de API
+    if (req.path.startsWith('/api')) {
+        console.log(`  → Ruta de API detectada: ${req.path}`);
+    }
     next();
 });
 
 // Hacer disponible la instancia de Socket.io en las rutas para emitir eventos
 app.set('io', io);
 
-// Rutas de vistas (deben ir antes de las rutas API para evitar conflictos)
-app.use('/', viewsRouter);
-
-// Rutas principales de la API REST
+// Rutas principales de la API REST (deben ir ANTES de las rutas de vistas)
+console.log('📡 Registrando rutas de API...');
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+console.log('✅ Rutas de API registradas');
 
 // Ruta de información de la API
 app.get('/api', (req, res) => {
@@ -80,6 +83,11 @@ app.get('/api', (req, res) => {
         }
     });
 });
+
+// Rutas de vistas (después de las rutas API)
+console.log('🌐 Registrando rutas de vistas...');
+app.use('/', viewsRouter);
+console.log('✅ Rutas de vistas registradas');
 
 // Configurar eventos de Socket.io para comunicación en tiempo real
 configureSocketHandlers(io);
